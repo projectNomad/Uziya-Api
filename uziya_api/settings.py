@@ -123,8 +123,6 @@ LOGGING = {
     }
 }
 
-
-
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
@@ -134,7 +132,9 @@ LOGGING = {
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
-DATABASES = { 'default': env.db('DATABASE_URL') }
+DATABASES = {
+    'default': env.db('DATABASE_URL')
+}
 
 # Custom user model
 

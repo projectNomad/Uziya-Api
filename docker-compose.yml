@@ -11,6 +11,8 @@ services:
       - db:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    links:
+      - redis:cache
 
   api:
     image: dev_server

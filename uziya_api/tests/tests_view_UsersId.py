@@ -98,7 +98,7 @@ class UsersIdTests(APITestCase):
         content = json.loads(response.content)
 
         # Check id of the user
-        self.assertEqual(content['id'], 1)
+        self.assertEqual(content['id'], 78)
 
         # Check the system doesn't return attributes not expected
         attributes = self.user_attrs.copy()
@@ -135,7 +135,7 @@ class UsersIdTests(APITestCase):
         content = json.loads(response.content)
 
         # Check id of the user
-        self.assertEqual(content['id'], 1)
+        self.assertEqual(content['id'], 84)
 
         # Check the system doesn't return attributes not expected
         attributes = self.user_attrs.copy()
@@ -183,7 +183,7 @@ class UsersIdTests(APITestCase):
         self.assertEqual(content['phone'], data['phone'])
 
         # Check id of the user
-        self.assertEqual(content['id'], 1)
+        self.assertEqual(content['id'], 74)
 
         # Check the system doesn't return attributes not expected
         attributes = self.user_attrs.copy()
@@ -230,7 +230,7 @@ class UsersIdTests(APITestCase):
         content = json.loads(response.content)
 
         # Check id of the user
-        self.assertEqual(content['id'], 1)
+        self.assertEqual(content['id'], 76)
 
         # Check the system doesn't return attributes not expected
         attributes = self.user_attrs.copy()
@@ -292,7 +292,7 @@ class UsersIdTests(APITestCase):
         self.assertTrue(self.user.check_password("!321tset"))
 
         # Check id of the user
-        self.assertEqual(content['id'], 1)
+        self.assertEqual(content['id'], 96)
 
         # Check the system doesn't return attributes not expected
         attributes = self.user_attrs.copy()
