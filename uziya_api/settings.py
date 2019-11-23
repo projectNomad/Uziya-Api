@@ -19,7 +19,6 @@ root_path = environ.Path(__file__) - 2
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
@@ -168,7 +167,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Montreal'
 
 USE_I18N = True
 
@@ -177,11 +176,27 @@ USE_L10N = True
 USE_TZ = True
 
 
+def gettext(x): return x
+
+
+LANGUAGES = (
+    ('fr-fr', gettext('French')),
+    ('en-us', gettext('English')),
+)
+
+# Local path
+LOCALE_PATHS = (
+    'apiNomad/locale',
+)
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
 
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 
 # Django Rest Framework
 
@@ -204,11 +219,16 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100
 }
 
-
 # CORS Header Django Rest Framework
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+# Conf for upload files
+DATA_UPLOAD_MAX_NUMBER_FIELDS = None
+FILE_UPLOAD_HANDLERS = [
+    'django.core.files.uploadhandler.TemporaryFileUploadHandler',
+    "django.core.files.uploadhandler.MemoryFileUploadHandler"
+]
 
 # Temporary Token
 
@@ -221,15 +241,14 @@ REST_FRAMEWORK_TEMPORARY_TOKENS = {
 # Activation Token
 
 ACTIVATION_TOKENS = {
-    'MINUTES': 2880,
+    'MINUTES': env('ACTIVATION_TOKENS_MINUTES', default=2880),
 }
-
 
 # Email service configuration (using Anymail).
 # Refer to Anymail's documentation for configuration details.
 
 ANYMAIL = {
-    'SENDINBLUE_API_KEY': 'example_key',
+    'SENDINBLUE_API_KEY': env('SENDINBLUE_API_KEY', default=''),
     'REQUESTS_TIMEOUT': (30, 30),
     'TEMPLATES': {
         'CONFIRM_SIGN_UP': 'example_id',
@@ -244,12 +263,23 @@ DEFAULT_FROM_EMAIL = 'noreply@example.org'
 
 LOCAL_SETTINGS = {
     'ORGANIZATION': "uziya",
-    "EMAIL_SERVICE": False,
+    "EMAIL_SERVICE": True,
     "AUTO_ACTIVATE_USER": False,
     "FRONTEND_INTEGRATION": {
-        "ACTIVATION_URL": "example.com/activate?activation_token="
-                          "{{token}}",
-        "FORGOT_PASSWORD_URL": "example.com/forgot_password?token="
-                               "{{token}}",
+        "ACTIVATION_URL": "{}/auth/register/activate/token".format(
+            env('CLIENT_HOST', default='http://localhost:4200')
+        ),
+        "FORGOT_PASSWORD_URL": "{}/auth/reset-password/token".format(
+            env('CLIENT_HOST', default='http://localhost:4200')
+        ),
+    },
+    "VIDEO": {
+        "WIDTH": 1280,
+        "HEIGHT": 720,
+        "SIZE": 783504130,
+    },
+    "IMAGES": {
+        "THUMBNAIL": [250, 150],
+        "ORIGIN": 800,
     },
 }

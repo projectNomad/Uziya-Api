@@ -177,6 +177,7 @@ class UserSerializer(UserUpdateSerializer):
 
         # Put user inactive by default
         user.is_active = False
+        user.username = user.email
 
         user.save()
 

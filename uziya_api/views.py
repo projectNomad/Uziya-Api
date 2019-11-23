@@ -3,6 +3,7 @@ import coreschema as coreschema
 
 from django.contrib.auth import get_user_model, password_validation
 from django.conf import settings
+from django.template.loader import render_to_string
 from django.utils import timezone
 from django.http import Http404
 from django.core.exceptions import ValidationError
@@ -111,8 +112,8 @@ class UserViewSet(viewsets.ModelViewSet):
                 user.save()
 
             if settings.LOCAL_SETTINGS['EMAIL_SERVICE'] is True:
-                MAIL_SERVICE = settings.ANYMAIL
-                FRONTEND_SETTINGS = settings.LOCAL_SETTINGS[
+                # MAIL_SERVICE = settings.ANYMAIL
+                frontend_settings = settings.LOCAL_SETTINGS[
                     'FRONTEND_INTEGRATION'
                 ]
 
@@ -123,30 +124,51 @@ class UserViewSet(viewsets.ModelViewSet):
                 ).key
 
                 # Setup the url for the activation button in the email
-                activation_url = FRONTEND_SETTINGS['ACTIVATION_URL'].replace(
+                activation_url = frontend_settings['ACTIVATION_URL'].replace(
                     "{{token}}",
                     activate_token
                 )
 
-                response_send_mail = services.send_mail(
-                    [user],
-                    {
-                        "activation_url": activation_url,
-                        "first_name": user.first_name,
-                        "last_name": user.last_name,
-                    },
-                    "CONFIRM_SIGN_UP",
+                # data for email activation
+                msg_html_css = render_to_string('css/confirm_sign_up.css')
+                merge_data = {
+                    'ACTIVATION_URL':
+                        frontend_settings['ACTIVATION_URL'].replace(
+                            "token",
+                            activate_token
+                        ),
+                    'CSS_STYLE': msg_html_css
+                }
+
+                plain_msg = render_to_string(
+                    "confirm_sign_up.txt",
+                    merge_data
+                )
+                msg_html = render_to_string(
+                    "confirm_sign_up.html",
+                    merge_data
+                )
+                response_send_mail = services. \
+                    service_send_mail(
+                        user,
+                        _("Confirmation d'enregistrement."),
+                        plain_msg, msg_html
                 )
 
                 if response_send_mail:
+                    content = {
+                        'detail': _("The account was created and a email was "
+                                    "sent. If your account is not "
+                                    "activated, contact the administration."),
+                    }
+                else:
                     content = {
                         'detail': _("The account was created but no email was "
                                     "sent. If your account is not "
                                     "activated, contact the administration."),
                     }
-                    return Response(content, status=status.HTTP_201_CREATED)
 
-        return response
+        return Response(content, status=status.HTTP_201_CREATED)
 
 
 class UsersActivation(APIView):

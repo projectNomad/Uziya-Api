@@ -1,0 +1,13 @@
+Confirmation d'achat
+------------------------------------------------------------------------
+
+Ton compte a bien été créé et il ne te reste plus qu'à l'activer:
+
+
+
+Activer mon compte: {{ACTIVATION_URL}}
+
+
+À très bientôt
+
+© 2018 Uziya
