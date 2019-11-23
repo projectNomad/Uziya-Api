@@ -47,6 +47,10 @@ class User(AbstractUser):
         choices=GENDER_CHOICES,
         verbose_name=_("Gender"),
     )
+    is_agreed_terms_use = models.BooleanField(
+        verbose_name=_('Term use'),
+        default=False
+    )
 
 
 class TemporaryToken(Token):
